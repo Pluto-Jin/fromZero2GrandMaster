@@ -34,6 +34,7 @@ template<class T,class T2>
 inline bool chkmax(T &x,const T2 &y){return x<y?(x=y,1):0;}
 template<class T,class T2>
 inline bool chkmin(T &x,const T2 &y){return x>y?(x=y,1):0;}
+
 int a[51][51],dp[102][51][51];
 
 int main()
