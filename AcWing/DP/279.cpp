@@ -35,7 +35,7 @@ inline bool chkmax(T &x,const T2 &y){return x<y?(x=y,1):0;}
 template<class T,class T2>
 inline bool chkmin(T &x,const T2 &y){return x>y?(x=y,1):0;}
 
-int dp[4001];
+unsigned dp[4001];
 
 int main()
 {
@@ -46,7 +46,7 @@ int main()
 	dp[0]=1;
 	for (int i=1;i<n;i++) for (int j=i;j<=n;j++) 
 		dp[j]+=dp[j-i];
-	cout<<(dp[n]&(1ll<<31)-1)<<endl;
+	cout<<(dp[n]<<1>>1)<<endl;
 	
 	return 0;
 }
