@@ -36,7 +36,7 @@ template<class T,class T2>
 inline bool chkmin(T &x,const T2 &y){return x>y?(x=y,1):0;}
 
 const int N=4000;
-ll dp[N][N][2],a[N];
+int dp[N][2],a[N];
 
 int main()
 {
@@ -46,14 +46,20 @@ int main()
 	int n,k; cin>>n>>k;
 	for (int i=1;i<=n;i++) cin>>a[i],a[i]+=a[i-1];
 
-	for (int i=2;i<=n;i++) for (int j=1;j<=min(i,k);j++) {
-		dp[i][j][0]=max(dp[i-1][j][1],dp[i-1][j][0]);
-		dp[i][j][1]=max(j-1?dp[i-1][j-1][1]+a[i]-a[i-1]:0,dp[i-1][j-1][0]);
-		cout<<i<<' '<<j<<' '<<dp[i][j][0]<<' '<<dp[i][j][1]<<endl;
+	for (int i=2;i<=n;i++) for (int j=min(i,k);j;j--) {
+		dp[j][0]=max(dp[j][1],dp[j][0]);
+		dp[j][1]=max(j-1?dp[j-1][1]+a[i]-a[i-1]:0,dp[j-1][0]);
 	}
 
-	ll ans=dp[n][n][0];
-	for (int i=1;i<=n;i++) ans=max(ans,dp[n][i][1]+a[n-i]); 
+	int ans=dp[k][0];
+	memset(dp,0,sizeof dp);
+
+	for (int i=1;i<n;i++) for (int j=min(i,k-1);j;j--) {
+		dp[j][0]=max(dp[j][1],dp[j][0]);
+		if (i==1) dp[j][1]=a[1];
+		else dp[j][1]=max(j-1?dp[j-1][1]+a[i]-a[i-1]:0,dp[j-1][0]);
+	}
+	chkmax(ans,max(dp[k-1][1]+a[n]-a[n-1],dp[k-1][0]));
 	cout<<ans<<endl;
 	
 	return 0;
