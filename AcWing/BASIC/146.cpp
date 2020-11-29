@@ -63,7 +63,7 @@ int main()
 			for (int j=1;j<=m;j++) {
 				auto [x,y]=pq.top(); pq.pop();
 				a[0][j]=a[1][x]+a[2][y];
-				if (x<m) pq.push(mp(x+1,j));
+				if (x<m) pq.push(mp(x+1,y));
 			}
 			for (int j=1;j<=m;j++) a[1][j]=a[0][j];
 		}
