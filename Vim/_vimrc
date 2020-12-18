@@ -1,0 +1,189 @@
+source $VIMRUNTIME/vimrc_example.vim
+
+set diffexpr=MyDiff()
+function MyDiff()
+  let opt = '-a --binary '
+  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+  let arg1 = v:fname_in
+  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+  let arg1 = substitute(arg1, '!', '\!', 'g')
+  let arg2 = v:fname_new
+  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+  let arg2 = substitute(arg2, '!', '\!', 'g')
+  let arg3 = v:fname_out
+  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+  let arg3 = substitute(arg3, '!', '\!', 'g')
+  if $VIMRUNTIME =~ ' '
+    if &sh =~ '\<cmd'
+      if empty(&shellxquote)
+        let l:shxq_sav = ''
+        set shellxquote&
+      endif
+      let cmd = '"' . $VIMRUNTIME . '\diff"'
+    else
+      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+    endif
+  else
+    let cmd = $VIMRUNTIME . '\diff'
+  endif
+  let cmd = substitute(cmd, '!', '\!', 'g')
+  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3
+  if exists('l:shxq_sav')
+    let &shellxquote=l:shxq_sav
+  endif
+endfunction
+language english
+syntax on
+
+set ff=dos
+
+set guifont=Source_Code_Pro:h12
+set guioptions-=m
+set guioptions-=T
+set guioptions-=r
+set guioptions-=b
+	
+
+"set encoding=utf-8
+set fileencoding=utf-8
+set fileencodings=utf-8,cp936
+set noerrorbells
+set nu
+set smartcase
+set noswapfile
+set noundofile
+set nobackup
+set noeb
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set incsearch
+
+colorscheme bandit
+autocmd FileType python colorscheme evening
+
+if executable("vimtweak.dll")
+autocmd guienter * call libcallnr("vimtweak.dll","SetAlpha",212)
+"autocmd guienter * call libcallnr("vimtweak.dll","EnableTopMost",1)
+endif
+
+" braket auto-complete
+inoremap ( ()<ESC>i
+inoremap ' ''<ESC>i
+inoremap " ""<ESC>i
+inoremap [ []<ESC>i
+inoremap { {}<ESC>i
+
+let mapleader = "\<Space>"
+
+nnoremap <Leader>2 :wq<CR>
+nnoremap <Leader>3 :w<CR>
+nnoremap <Leader>1 :q<CR>
+nnoremap <Leader>` :e %:p:h\
+
+"terminal mode
+tnoremap <ESC> <C-\><C-n>
+
+" go the previous cursor position
+nnoremap , g;
+" delete and keep normal mode
+nnoremap s <Del>
+" switch window
+nnoremap <Leader>w <C-w>w
+
+" run as .py
+" compile and run as .c or .cpp
+" '%' for file name with extension, '%:r' without
+
+autocmd filetype python nnoremap <Leader>4 :w<CR>:!python.exe %<CR>
+autocmd filetype cpp nnoremap <Leader>4 :w<CR>:term ++hidden ++open g++ -static -std=c++17 -o %:r %<CR><CR>
+"autocmd filetype cpp nnoremap <Leader>w :w<CR>:!g++ -static -std=c++17 -Wall -o %:r %<CR>:!%:r<CR>
+autocmd filetype c nnoremap <Leader>4 :w<CR>:!gcc -o %:r %<CR>:!%:r<CR>
+autocmd filetype java nnoremap <Leader>4 :w<CR>:!javac %<CR>:!java %:r<CR>
+
+nnoremap <Leader>r :!%:r<CR><CR>
+
+" test the source code
+" by defining the TEST which makes main() in file.c run 
+nnoremap <Leader>t :w<CR>:!g++ % -DTEST=0<CR>:!a<CR>
+" create object(.o) file
+nnoremap <Leader>o :w<CR>:!g++ -c %<CR>
+" link all the .o files create final .exe file and run it
+nnoremap <Leader>l :!g++ -o %:r *.o<CR>:!%:r<CR> 
+
+
+" substitute
+
+" 'gD' highlights all the words and goes to the first 
+" '*' goes to the next
+" 'ye' yanks a word start from the cursor to the end of this word 
+" 'yw' to the start of the next word
+" '\<''\>' for substituting exact whole word inside them
+" '<C-r>"' pastes the yanked word to the command line
+" 'g' for global 'c' for asking confirmation"
+nnoremap <Leader>s *ye:%s/\<<C-r>"\>//gc<left><left><left>
+vnoremap <Leader>s y:%s/<C-r>"//gc<left><left><left>
+
+" cancel highlight
+nnoremap <ESC> :noh<CR>
+" fold
+nnoremap <Leader>f zf<CR>
+vnoremap <Leader>f zf<CR>
+" search pattern under visual selection
+vnoremap / y/<C-R>"<CR>
+
+"copy and paste from clipboard
+nnoremap <Leader>y ggvG$"*y
+vnoremap <C-c> "*y
+nnoremap <Leader>g "*p
+inoremap <C-v> <ESC>"*p
+
+
+func SkipPair()
+	if getline('.')[col('.')-1]==')'||getline('.')[col('.')-1]==']'||getline('.')[col('.')-1]=='}'||getline('.')[col('.')-1]=='>'||getline('.')[col('.')-1]=='"'||getline('.')[col('.')-1]=="'"||getline('.')[col('.')-1]==';'
+		return "\<ESC>la"
+	else
+		return "\t"
+	endif
+endfunc
+func BracketAutoIndent()
+	if getline('.')[col('.'-2)]=='('&&getline('.')[col('.')-1]==')'||getline('.')[col('.')-2]=='['&&getline('.')[col('.')-1]==']'||getline('.')[col('.')-2]=='{'&&getline('.')[col('.')-1]=='}'||getline('.')[col('.')-2]=='<'&&getline('.')[col('.')-1]=='>'
+		return "\<CR>\<ESC>\<S-o>"
+	else
+		return "\<CR>"
+	endif
+endfunc
+func BracketShiftIndent()
+	if getline('.')[col('.'-2)]=='('&&getline('.')[col('.')-1]==')'||getline('.')[col('.')-2]=='['&&getline('.')[col('.')-1]==']'||getline('.')[col('.')-2]=='{'&&getline('.')[col('.')-1]=='}'||getline('.')[col('.')-2]=='<'&&getline('.')[col('.')-1]=='>'
+		return "\<CR>\<ESC>k^a\<CR>"
+	else
+		return "\<CR>"
+	endif
+endfunc
+inoremap <TAB> <C-R>=SkipPair()<CR>
+inoremap <CR> <C-R>=BracketAutoIndent()<CR>
+"inoremap <S-CR> <C-R>=BracketShiftIndent()<CR>
+
+
+"cpp cp settings
+autocmd BufNewFile *.cpp 0r /Program Files (x86)/Vim/cppTemplate.cpp
+
+autocmd filetype cpp nnoremap ; Gkkk
+autocmd filetype cpp nnoremap <Leader><Leader> :call GlobalVar()<CR>
+fu! GlobalVar()
+	if getline(39)=="int main()"
+		call feedkeys("37ggo\<ESC>")
+	else 
+		call feedkeys("39gg")
+	endif
+endfu
+
+autocmd filetype cpp call IoStream()
+fu! IoStream()
+	if line("$")==1
+		call feedkeys("ggzf31ggGddggGkkk")
+	else 
+		call feedkeys("ggzf31ggg`\"")
+	endif
+endfu
