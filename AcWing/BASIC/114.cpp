@@ -40,9 +40,35 @@ const int N=1001;
 struct node {
 	int x,y;
 	bool operator<(const node &tmp) const {
-		return x*y<=tmp.x*tmp.y;
+		return x*y<tmp.x*tmp.y;
 	}
 } a[N];
+
+void print(vi &a) {
+	if (a.empty()) cout<<0;
+	else for (auto i:a) cout<<i;
+	cout<<endl;
+}
+vi operator*(vi &a,int b) {
+	vi c; int tmp=0;
+	for (int i=(int)a.size()-1;~i;i--) tmp+=a[i]*b,c.pb(tmp%10),tmp/=10;
+	while (tmp) c.pb(tmp%10),tmp/=10;
+	reverse(c.begin(),c.end());
+	return c;
+}
+vi operator/(vi &a,int b) {
+	vi c; int tmp=0,fg=0; 
+	for (auto i:a) {
+		tmp=tmp*10+i;
+		if (tmp>=b or fg) c.pb(tmp/b),tmp%=b,fg=1;
+	}
+	return c;
+}
+bool operator<(const vi &a,const vi &b) {
+	if (a.size()!=b.size()) return a.size()<b.size();
+	for (int i=0;i<a.size();i++) if (a[i]!=b[i]) return a[i]<b[i];
+	return 0;	
+}
 
 int main()
 {
@@ -52,12 +78,12 @@ int main()
 	int n; cin>>n;
 	for (int i=0;i<=n;i++) cin>>a[i].x>>a[i].y;
 	sort(a+1,a+n+1);
-	int cur=a[0].x,ans=0;
-	for (int i=1;i<=n;i++) {
+	vi cur,ans; cur.pb(1);
+	for (int i=0;i<=n;i++) {
 		chkmax(ans,cur/a[i].y);
-		cur*=a[i].x;	
+		cur=cur*a[i].x;	
 	}
-	cout<<ans<<endl;
+	print(ans);
 	
 	return 0;
 }
