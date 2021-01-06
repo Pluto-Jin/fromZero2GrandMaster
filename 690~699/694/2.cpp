@@ -53,18 +53,18 @@ int main()
 		for (int i=1;i<=n;i++) {
 			cin>>a[i];	
 			int cur;
-			for (int j=1;j<=1000 and ps[j]<=a[i];j++) if (a[i]%ps[j]==0) cur=j;	
-			cnt[a[i]/ps[cur]]++;
+			for (int j=1;j<=1000 and ps[j]<=a[i];j++) if (a[i]%ps[j]==0) cur=a[i]/ps[j];	
+			cnt[cur]++;
 		}
 		for (auto [x,y]:cnt) {
 			chkmax(ma,y);
 			if (x==1 or y%2==0) mm+=y;
 		}
+		chkmax(mm,ma);
 		int q; cin>>q;
 		while (q--) {
 			ll w; cin>>w;
-			if (!w) cout<<ma<<endl;
-			else cout<<max(mm,ma)<<endl;
+			cout<<(w?mm:ma)<<endl;
 		}
 	}
 	
