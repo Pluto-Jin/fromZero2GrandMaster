@@ -172,18 +172,18 @@ autocmd BufNewFile *.cpp 0r /Program Files (x86)/Vim/cppTemplate.cpp
 autocmd filetype cpp nnoremap ; Gkkk
 autocmd filetype cpp nnoremap <Leader><Leader> :call GlobalVar()<CR>
 fu! GlobalVar()
-	if getline(39)=="int main()"
-		call feedkeys("37ggo\<ESC>")
+	if getline(40)=="int main()"
+		call feedkeys("38ggo\<ESC>")
 	else 
-		call feedkeys("39gg")
+		call feedkeys("40gg")
 	endif
 endfu
 
 autocmd filetype cpp call IoStream()
 fu! IoStream()
 	if line("$")==1
-		call feedkeys("ggzf31ggGddggGkkk")
+		call feedkeys("ggzf32ggGddggGkkk")
 	else 
-		call feedkeys("ggzf31ggg`\"")
+		call feedkeys("ggzf32ggg`\"")
 	endif
 endfu

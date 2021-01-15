@@ -11,6 +11,7 @@
 #include<cstdio>
 #include<cstring>
 #include<cmath>
+#include<numeric>
 #include<cstdlib>
 #include<ctime>
 #include<iomanip>
@@ -19,9 +20,9 @@
 #define se second
 #define endl '\n'
 #define pb push_back
+#define eb emplace_back
 #define ppf pop_front
 #define ppb pop_back
-#define mp make_pair
 typedef long long ll;
 typedef std::pair<int,int> pii;
 typedef std::pair<ll,ll> pll;
