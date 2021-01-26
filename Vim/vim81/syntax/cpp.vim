@@ -29,7 +29,7 @@ syn keyword cppType		string ll pii pll
 syn keyword cppVector		vi vvi vii
 syn keyword cCustomedType	pair vector map unordered_map set unordered_set multiset stack deque queue priority_queue bitset
 syn keyword cppMember		first second fi se
-syn keyword cppFunction		fill resize swap lower_bound upper_bound sort stable_sort reverse merge unique stoi stol stoll
+syn keyword cppFunction		fill resize swap lower_bound upper_bound sort stable_sort reverse merge unique binary_search gcd lcm stoi stol stoll
 syn keyword cppMethod		push_back emplace_back push_front pop_front pop_back push pop top front back count make_pair make_tuple
 
 syn keyword cppStorageClass	mutable
