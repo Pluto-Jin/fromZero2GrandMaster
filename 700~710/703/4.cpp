@@ -38,20 +38,15 @@ template<class T,class T2>
 inline bool chkmin(T &x,const T2 &y){return x>y?(x=y,1):0;}
 
 const int N=2e5+1;
-int a[N],n,k;
+int a[N],mi[N],n,k;
 
 bool check(int mid) {
-	int cur=0,len=0,ma=0;
-	for (int i=1;i<=n;i++) {
-		if (a[i]>=mid) {
-			len++,cur++;
-			chkmax(ma,len+cur-1);
-		} else {
-			len++,cur--;
-			if (cur<0) cur=0,len=0;
-		}
-	}
-	if (ma>=k) return true;
+	for (int i=1,cur=0;i<=n;i++) {
+		if (a[i]>=mid) cur++;
+		else cur--;
+		mi[i]=min(mi[i-1],cur);
+		if (i>=k and cur-mi[i-k]>0) return true;
+	}	
 	return false;
 }
 
