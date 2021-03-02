@@ -38,9 +38,10 @@ template<class T,class T2>
 inline bool chkmin(T &x,const T2 &y){return x>y?(x=y,1):0;}
 
 const int N=1e5+1;
-int n,m,d[N],mi[N];
+int n,m;
+ll d[N][51];
 vii edge[N];
-bool vis[N];
+bool vis[N][51];
 
 int sqr(int x) {return x*x;}
 
@@ -54,20 +55,22 @@ int main()
 		int x,y,w; cin>>x>>y>>w;
 		edge[x].eb(y,w),edge[y].eb(x,w);
 	}
-	for (int i=2;i<=n;i++) d[i]=2e9;
-	memset(mi,0x3f,sizeof mi);
-	priority_queue<pii> pq;
-	pq.emplace(0,1);
+	memset(d,0x3f,sizeof d); d[1][0]=0;
+	priority_queue<tuple<ll,int,int>> pq;
+	pq.emplace(0,1,0);
 	while (pq.size()) {
-		auto [tmp,at]=pq.top(); pq.pop(); tmp=-tmp;
-		if (tmp!=d[at]) continue;
-		vis[at]=1;
-		for (auto [to,w]:edge[at]) if (chkmin(mi[to],w)) {
-			for (auto [too,ww]:edge[to]) if (!vis[too] and chkmin(d[too],tmp+sqr(w+ww)))
-				pq.emplace(-d[too],too);
+		auto [tmp,at,k]=pq.top(); pq.pop(); tmp=-tmp;
+		if (tmp!=d[at][k]) continue;
+		if (!k) { 
+			for (auto [to,w]:edge[at]) if (!vis[to][w] and chkmin(d[to][w],tmp))
+				pq.emplace(-tmp,to,w);
+		} else {
+			vis[at][k]=1;
+			for (auto [to,w]:edge[at]) if (chkmin(d[to][0],tmp+sqr(w+k)))
+				pq.emplace(-d[to][0],to,0);
 		}
 	}
-	for (int i=1;i<=n;i++) cout<<(d[i]==2e9?-1:d[i])<<' ';
+	for (int i=1;i<=n;i++) cout<<(d[i][0]==0x3f3f3f3f3f3f3f3f?-1ll:d[i][0])<<' ';
 	cout<<endl;
 	
 	return 0;
