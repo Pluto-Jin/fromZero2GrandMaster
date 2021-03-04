@@ -38,7 +38,22 @@ template<class T,class T2>
 inline bool chkmin(T &x,const T2 &y){return x>y?(x=y,1):0;}
 
 const int N=2e5+5;
-int a[N],b[N],cnt[N];
+int aa[N],bb[N],a[N],b[N],cnt[N];
+
+int solve(int n,int m) {
+	reverse(a+1,a+n+1);
+	reverse(b+1,b+m+1);
+	set<int> s;
+	for (int i=1;i<=n;i++) s.insert(a[i]);
+	cnt[m+1]=0;
+	for (int i=m;i;i--) cnt[i]=cnt[i+1]+s.count(b[i]);
+	int ans=0;
+	for (int i=1;i<=m;i++) {
+		int tmp=upper_bound(a+1,a+n+1,b[i])-a-1,ttmp=lower_bound(b+1,b+m+1,b[i]-tmp+1)-b;
+		chkmax(ans,i-ttmp+1+cnt[i+1]);
+	}
+	return ans;
+}
 
 int main()
 {
@@ -47,28 +62,18 @@ int main()
 
 	int t; cin>>t;
 	while (t--) {
-		set<int> bb;
-		int n,m; cin>>m>>n;
-		for (int i=1;i<=m;i++) cin>>b[i],bb.insert(b[i]);
-		int pp=lower_bound(b+1,b+m+1,0)-b;
-		for (int i=1;i<=n;i++) cin>>a[i];
-		int p=lower_bound(a+1,a+n+1,0)-a;
+		int n,m; cin>>n>>m;
+		for (int i=1;i<=n;i++) cin>>aa[i];
+		for (int i=1;i<=m;i++) cin>>bb[i];
 
-
-		for (int i=0;i<=n+1;i++) cnt[i]=0;
-		for (int i=n;i>=p;i--) if (bb.count(a[i])) cnt[i]=1+cnt[i+1]; else cnt[i]=cnt[i+1];
-		for (int i=1;i<p;i++) if (bb.count(a[i])) cnt[i]=1+cnt[i-1]; else cnt[i]=cnt[i-1];
-
-		int ans=0,a1=0,a2=0;
-		for (int i=1;i<p;i++) {
-			int tmp=lower_bound(b+1,b+m+1,a[i])-b; if (tmp>=pp) chkmax(a1,cnt[i-1]);
-			else chkmax(a1,cnt[i-1]+(upper_bound(a+1,a+n+1,min(0,a[i]+pp-tmp-1))-a-1)-i+1);
-		}
-		for (int i=n;i>=p;i--) {
-			int tmp=upper_bound(b+1,b+m+1,a[i])-b-1; if (tmp<pp) chkmax(a2,cnt[i+1]);
-			else chkmax(a2,cnt[i+1]+i+1-(lower_bound(a+1,a+n+1,max(0,a[i]+pp-tmp))-a));
-		}
-		cout<<a1+a2<<endl;
+		int nn=0,mm=0;
+		for (int i=1;i<=n and aa[i]<0;i++) a[++nn]=-aa[i];
+		for (int i=1;i<=m and bb[i]<0;i++) b[++mm]=-bb[i];
+		int ans=solve(nn,mm);
+		nn=mm=0;
+		for (int i=n;i and aa[i]>0;i--) a[++nn]=aa[i];
+		for (int i=m;i and bb[i]>0;i--) b[++mm]=bb[i];
+		cout<<ans+solve(nn,mm)<<endl;
 	}
 	
 	return 0;
